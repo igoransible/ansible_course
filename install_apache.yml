@@ -1,36 +1,16 @@
-- name: Install Apache and PHP on Debian/Ubuntu
+- name: Install Apache and PHP using inventory-defined variables
   hosts: all
   become: true
+
   tasks:
-    - name: Update repo index
+    - name: Install Apache and PHP packages
       ansible.builtin.apt:
-        update_cache: true
+        name:
+          - "{{ apache_package }}"
+          - "{{ php_package }}"
+        state: present
       when: ansible_facts['os_family'] == "Debian"
 
-    - name: Install Apache2 package
-      ansible.builtin.apt:
-        name: apache2
-        state: latest
-      when: ansible_facts['os_family'] == "Debian"
-
-    - name: Install support for PHP
-      ansible.builtin.apt:
-        name: libapache2-mod-php
-        state: latest
-      when: ansible_facts['os_family'] == "Debian"
-
-- name: Install Apache and PHP on Fedora using raw
-  hosts: all
-  become: true
-  tasks:
-    - name: Update repo index
-      ansible.builtin.raw: dnf makecache
-      when: ansible_facts['distribution'] == "Fedora"
-
-    - name: Install httpd
-      ansible.builtin.raw: dnf install -y httpd
-      when: ansible_facts['distribution'] == "Fedora"
-
-    - name: Install PHP
-      ansible.builtin.raw: dnf install -y php
+    - name: Install Apache and PHP packages on Fedora
+      ansible.builtin.raw: dnf install -y {{ apache_package }} {{ php_package }}
       when: ansible_facts['distribution'] == "Fedora"
