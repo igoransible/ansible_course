@@ -3,12 +3,14 @@
   become: true
   pre_tasks:
     - name: update ubuntu
+      tags: always
       ansible.builtin.apt:
         upgrade: dist
         update_cache: yes 
       when: ansible_distribution == "Ubuntu"
 
     - name: update fedora
+      tags: always
       ansible.builtin.raw: dnf update -y
       when: ansible_distribution == "Fedora"
 
@@ -16,6 +18,7 @@
   become: true
   tasks:
     - name: install apache on ubuntu
+      tags: apache,ubuntu
       ansible.builtin.apt:
         name: 
           - apache2
@@ -26,5 +29,6 @@
   become: true
   tasks:
     - name: install db on fedora
+      tags: db,fedora
       ansible.builtin.raw: dnf install mariadb -y
       when: ansible_distribution == "Fedora"
