@@ -32,3 +32,12 @@
     owner: prdoch
     group: prdoch
     mode: '0600'
+
+- name: configure openssh based on the template
+  ansible.builtin.template:
+    src: "{{ ssh_template_file }}"
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_sshd 
