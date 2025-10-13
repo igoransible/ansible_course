@@ -1,0 +1,34 @@
+- name: create user prdoch and add to root group
+  tags: always
+  ansible.builtin.user:
+    name: prdoch
+    groups: root
+    append: yes
+    state: present
+
+- name: configure passwordless sudo for prdoch
+  tags: always
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/prdoch
+    content: "prdoch ALL=(ALL) NOPASSWD: ALL\n"
+    owner: root
+    group: root
+    mode: '0440'
+
+- name: create .ssh directory for prdoch
+  tags: always
+  ansible.builtin.file:
+    path: /home/prdoch/.ssh
+    state: directory
+    owner: prdoch
+    group: prdoch
+    mode: '0700'
+
+- name: add public key to authorized_keys
+  tags: always
+  ansible.builtin.copy:
+    dest: /home/prdoch/.ssh/authorized_keys
+    content: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEeSsOkR0sPqci1QbFrx6/WPMMeYPY+cHobUxl/va1P6 igor@ubuntu-ws\n"
+    owner: prdoch
+    group: prdoch
+    mode: '0600'
