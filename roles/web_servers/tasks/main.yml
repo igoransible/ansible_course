@@ -1,28 +1,38 @@
-- name: install apache on ubuntu
-  tags: apache, ubuntu
-  ansible.builtin.apt:
-    name:
-      - apache2
-      - libapache2-mod-php
-  when: ansible_distribution == "Ubuntu"
-
-- name: install apache on fedora
-  tags: apache, fedora
-  ansible.builtin.dnf:
-    name: httpd
+- name: install apache
+  tags: apache
+  ansible.builtin.package:
+    name: "{{ apache_package }}"
     state: present
-  when: ansible_distribution == "Fedora"
 
-- name: ensure apache is running on ubuntu
-  tags: apache, ubuntu
+- name: ensure apache is running
+  tags: apache
   ansible.builtin.service:
-    name: apache2
+    name: "{{ apache_service }}"
     state: started
-  when: ansible_distribution == "Ubuntu"
 
-- name: ensure apache is running on fedora
-  tags: apache, fedora
-  ansible.builtin.service:
-    name: httpd
-    state: started
+- name: update ServerAdmin email in httpd.conf on Fedora
+  tags: apache
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: 'ServerAdmin changed@toansible.com'
+    backup: yes
   when: ansible_distribution == "Fedora"
+  notify: restart_apache
+#  register: apache
+
+#- name: restart apache if config changed
+#  tags: apache
+#  ansible.builtin.service:
+#    name: "{{ apache_service }}"
+#    state: restarted
+#  when: apache.changed
+
+- name: copy html file
+  tags: apache
+  ansible.builtin.copy:
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: '0644'
