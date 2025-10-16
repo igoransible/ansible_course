@@ -5,6 +5,7 @@
     groups: root
     append: yes
     state: present
+    password: "{{ prdoch_password }}"
 
 - name: configure passwordless sudo for prdoch
   tags: always
