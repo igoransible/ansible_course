@@ -1,7 +1,0 @@
-- name: install db on fedora
-  tags: db, fedora
-  ansible.builtin.dnf:
-    name: mariadb
-    state: present
-  when: ansible_distribution == "Fedora"
-

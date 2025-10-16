@@ -2,12 +2,12 @@
 - hosts: all
   become: true
   pre_tasks:
-    - name: update ubuntu
-      tags: always
-      ansible.builtin.apt:
-        upgrade: dist
-        update_cache: yes
-      when: ansible_distribution == "Ubuntu"
+#    - name: update ubuntu
+#      tags: always
+#      ansible.builtin.apt:
+#        upgrade: dist
+#        update_cache: yes
+#      when: ansible_distribution == "Ubuntu"
 
     - name: update fedora
       tags: always
@@ -21,12 +21,12 @@
   roles:
     - base
 
-- hosts: db_servers
-  become: true
-  roles:
-    - db_servers
-
 - hosts: web_servers
   become: true
   roles:
     - web_servers
+
+#- hosts: fedora
+#  become: true
+# roles:
+#   - fedora
